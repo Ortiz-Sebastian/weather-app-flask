@@ -1,0 +1,71 @@
+{% extends "layout.html"%}
+{% block content%}
+<main role="main" class="container">
+    <div class="row justify-content-center">
+        <div class="col-mid-3">
+            <h1>Enter a City</h1>
+        </div>
+    </div>
+            
+                <form method="POST" action="">
+                    {{form.hidden_tag()}}
+                    <fieldset class="form-group">
+                        <div class = "form-group" >
+                            
+                            {%if form.city.errors%}
+                            {{form.city(class="form-control is-invalid")}}
+                            <div class="invalid-feedback">
+                                {%for error in form.city.errors%}
+                                    <span>{{error}}</span>
+                                {%endfor%}
+                            </div>
+                            {%else%}
+                                {{form.city(class="form-control")}}
+                            {%endif%}
+
+                        </div>
+                        <div class="row justify-content-md-center">
+                        <div class="border-top pt-5 border-dark" class="col-4">
+                            <legend><h1>Select Units</legend></h1>
+                        </div>
+                        </div>
+                        
+                            
+                            {%if form.units.errors%}
+                            {{form.units(class="form-check-input is-invalid")}}
+                            <div class="invalid-feedback">
+                                {%for error in form.units.errors%}
+                                    <span>{{error}}</span>
+                                {%endfor%}
+                            </div>
+                            {%else%}
+                            
+                            <div class="row justify-content-md-center ">
+                            {% for subfield in form.units %}
+                                <div class="col-md-3 ml-auto">
+                                <h2>{{ subfield }}</h2>
+                                <h2>{{ subfield.label }}</h2>
+                                </div>
+                                
+                            {% endfor %}
+                            
+                            {%endif%}
+                                
+                            </div>
+
+
+                    </fieldset>
+
+                    <div class="row justify-content-center">
+                        <div class="col-md-1">
+                            {{form.enter(class="btn btn-success btn-lg")}}
+                        </div>
+                    </div>
+                </form>
+
+        
+
+
+    </div>
+</main>
+{% endblock content%}

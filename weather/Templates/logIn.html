@@ -1,0 +1,55 @@
+{% extends "layout.html"%}
+{%block content%}
+<div class="content-section">
+    <form method="POST" action="">
+        {{form.hidden_tag()}}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-5">Log in</legend>
+            <div class="form-group">
+                {{form.userName.label(class="form-control-label")}}
+                {%if form.userName.errors%}
+                {{form.userName(class="form-control is-invalid")}}
+                    <div class="invalid-feedback">
+                    {%for error in form.userName.errors%}
+                        <span>{{error}}</span>
+                    {%endfor%}
+                    </div>
+                {%else%}
+                    {{form.userName(class="form-control")}}
+                {%endif%}
+                
+            </div>
+            
+            <div class="form-group">
+                {{form.password.label(class="form-control-label")}}
+                {%if form.password.errors%}
+                {{form.password(class="form-control is-invalid")}}
+                    <div class="invalid-feedback">
+                    {%for error in form.password.errors%}
+                        <span>{{error}}</span>
+                    {%endfor%}
+                    </div>
+                {%else%}
+                    {{form.password(class="form-control")}}
+                {%endif%}
+                
+            </div>
+            <div class="form-check">
+                {{form.remember(class="form-check-input")}}
+                {{form.remember.label(class="form-check-label")}}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{form.submit(class="btn btn-success")}}
+        </div>
+        <small class="text-muted">
+            <a href="#" >Forgot password?</a>
+        </small>
+    </form>
+</div>
+<div class="border-top pt-5 border-dark">
+    <small class="text-muted">
+        Dont have an account? <a class="ml-4" href= "{{url_for('register')}}" >register</a>
+    </small>
+</div>
+{% endblock content%}
