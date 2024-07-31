@@ -1,9 +1,13 @@
 
 from flask import render_template,url_for,flash,redirect
-from weather.user import User
+
 from weather import app,db,bcrypt
+from weather.user import User
 from weather.forms import registrationForm, logInForm, cityData
 from weather.weatherData import Weather
+
+with app.app_context():
+    db.create_all()
 
 @app.route("/",methods=['GET','POST'])
 def home():
@@ -24,9 +28,12 @@ def register():
     form = registrationForm()
     if  form.validate_on_submit():
         hashPass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        
         user = User(username = form.userName.data,email = form.email.data,password = hashPass)
+        db.session.add(user)
+        db.session.commit()
         flash(f'Account created for {form.userName.data}', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('login'))
     return  render_template("registration.html", title='register',form = form)
      
 @app.route("/login", methods=['GET','POST'])
