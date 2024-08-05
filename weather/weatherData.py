@@ -36,3 +36,6 @@ class Weather():
                 dict = {"date": date, "max": maxTemp, "min": minTemp, "name": weatherName, "description": weatherDes,"imageName": icon}
                 weeklyData.append(dict)
             return weeklyData
+    def getImageUrl(self, id):
+         url = "https://openweathermap.org/img/wn/"+id+"@2x.png"
+         return url

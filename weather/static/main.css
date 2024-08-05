@@ -31,13 +31,15 @@ body {
     border: 2px solid #000000;
     border-radius: 3px;
     margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
   }
 
-  
+   
   
   .main-img {
-    height: 65px;
-    width: 65px;
+    height: 200px;
+    width: 200px;
     margin-right: 16px;
   }
   
