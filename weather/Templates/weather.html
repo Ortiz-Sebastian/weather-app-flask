@@ -1,6 +1,7 @@
 {% extends "layout.html"%}
 {% block content%}
 <div class = "container-fluid">
+    <form method="POST" action="">
     <div class ="content-section">
         <div class="row">
             <div class="col-6">
@@ -14,11 +15,8 @@
             </div>
             <div class="col-1 align-items-end">
             {%if buttonShow%}
-            <form method="POST" action="">
+                <button class="btn-success btn-lg" type="submit" name="add"> add+</button>
                 
-                <button class="btn-success btn-lg" type="submit"> add+</button>
-                
-            </form>
             {%endif%}
         </div>
         </div>
@@ -47,13 +45,240 @@
         </div>
         <div class="row">
             <div class="col-2 ml-5 offset-sm-1">
-                <h1>{{data['weather'][0]['main']}}: </h1>
+                <h1>{{data['weather'][0]['main']}} </h1>
             </div>
             <div class="col-3">
                 <h1>{{data['weather'][0]['description']}}</h1>
             </div>
         </div>
-        
     </div>
+    <div class="bottom-container">
+    {%if nextClicked == false or prevClicked%}
+        <div class="small-section1">
+            <div class="row">
+                <div class="col-12">
+                    <h2>{{time[:7]}}</h2>
+                </div>
+                
+            </div>
+        <div class="row ">
+            <div class="col-5 mt-5">
+                <img src={{url}} class="small-img">
+            </div>
+            <div class="col-4 mt-3">
+                <h1>{{data['main']['temp_max']}}°</h1>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-2 ">
+                <h1>{{data['main']['temp_min']}}°</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 mt-3">
+                <h5>{{data['weather'][0]['description']}}</h5>
+            </div>
+        </div>
+        </div>
+    `  
+        <div class="small-section2">
+            <div class="row">
+                <div class="col-12">
+                    <h2>{{wData[0]['date']}}</h2>
+                </div>
+                
+            </div>
+            <div class="row">
+            <div class="col-5 mt-5">
+                <img src="{{wData[0]['url']}}"  class="small-img">
+            </div>
+            <div class="col-4 mt-3">
+                <h1>{{wData[0]['max']}}°</h1>
+            </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-2 ">
+                    <h1>{{wData[0]['min']}}°</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mt-3">
+                    <h5>{{wData[0]['description']}}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="small-section3">
+            <div class="row">
+                <div class="col-12">
+                    <h2>{{wData[1]['date']}}</h2>
+                </div>
+                
+            </div>
+            <div class="row">
+            <div class="col-5 mt-5">
+                <img src="{{wData[1]['url']}}"  class="small-img">
+            </div>
+            <div class="col-4 mt-3">
+                <h1>{{wData[1]['max']}}°</h1>
+            </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-2 ">
+                    <h1>{{wData[1]['min']}}°</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mt-3">
+                    <h5>{{wData[1]['description']}}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="small-section4">
+            <div class="row">
+                <div class="col-12">
+                    <h2>{{wData[2]['date']}}</h2>
+                </div>
+                
+            </div>
+            <div class="row">
+            <div class="col-5 mt-5">
+                <img src="{{wData[2]['url']}}"  class="small-img">
+            </div>
+            <div class="col-4 mt-3">
+                <h1>{{wData[2]['max']}}°</h1>
+            </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-2 ">
+                    <h1>{{wData[2]['min']}}°</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mt-3">
+                    <h5>{{wData[2]['description']}}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-end">
+        <div class="col-1 ml-4 mb-2">
+            <button type="submit" class="btn-lg btn-info" name="next">>>></button>
+        </div>
+    </div>
+    {%else%}
+        <div class="small-section1">
+            <div class="row">
+                <div class="col-12">
+                    <h2>{{wData[3]['date']}}</h2>
+                </div>
+                
+            </div>
+        <div class="row ">
+            <div class="col-5 mt-5">
+                <img src= "{{wData[3]['url']}}" class="small-img">
+            </div>
+            <div class="col-4 mt-3">
+                <h1>{{  wData[3]['max']}}°</h1>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-2 ">
+                <h1>{{wData[3]['min']}}°</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 mt-3">
+                <h5>{{wData[3]['description']}}</h5>
+            </div>
+        </div>
+        </div>
+    `  
+        <div class="small-section2">
+            <div class="row">
+                <div class="col-12">
+                    <h2>{{wData[4]['date']}}</h2>
+                </div>
+                
+            </div>
+            <div class="row">
+            <div class="col-5 mt-5">
+                <img src="{{wData[4]['url']}}"  class="small-img">
+            </div>
+            <div class="col-4 mt-3">
+                <h1>{{wData[4]['max']}}°</h1>
+            </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-2 ">
+                    <h1>{{wData[4]['min']}}°</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mt-3">
+                    <h5>{{wData[4]['description']}}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="small-section3">
+            <div class="row">
+                <div class="col-12">
+                    <h2>{{wData[5]['date']}}</h2>
+                </div>
+                
+            </div>
+            <div class="row">
+            <div class="col-5 mt-5">
+                <img src="{{wData[5]['url']}}"  class="small-img">
+            </div>
+            <div class="col-4 mt-3">
+                <h1>{{wData[5]['max']}}°</h1>
+            </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-2 ">
+                    <h1>{{wData[5]['min']}}°</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mt-3">
+                    <h5>{{wData[5]['description']}}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="small-section4">
+            <div class="row">
+                <div class="col-12">
+                    <h2>{{wData[6]['date']}}</h2>
+                </div>
+                
+            </div>
+            <div class="row">
+            <div class="col-5 mt-5">
+                <img src="{{wData[6]['url']}}"  class="small-img">
+            </div>
+            <div class="col-4 mt-3">
+                <h1>{{wData[6]['max']}}°</h1>
+            </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-2 ">
+                    <h1>{{wData[6]['min']}}°</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mt-3">
+                    <h5>{{wData[6]['description']}}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-start">
+        <div class="col-1 ml-4 mb-2">
+            <button type="submit" class="btn-lg btn-info" name="prev"> <<< </button>
+        </div>
+    </div>
+    {%endif%}
+    </form>
 </div>
+
 {%endblock content%}

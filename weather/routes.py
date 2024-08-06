@@ -1,6 +1,6 @@
 
 from flask import render_template,url_for,flash,redirect,request
-
+import time
 from weather import app,db,bcrypt
 from weather.user import User, SavedCitys
 from weather.forms import registrationForm, logInForm, cityData
@@ -21,13 +21,12 @@ def home():
         global currUnit
         currUnit = form.units.data
 
-        tdData['main']['temp'] = round(tdData['main']['temp'])
-        tdData['main']['feels_like'] = round(tdData['main']['feels_like'])
-
         global tdTime
-        tdTime = weather.getTime(tdData["dt"],True)
+        tdTime = weather.getTime(time.time(),True)
+
         global imageUrl
         imageUrl = weather.getImageUrl(tdData['weather'][0]['icon'])
+
         global sunrise
         sunrise = weather.getTime(tdData['sys']['sunrise'], True)
         sunrise = sunrise[17:]
@@ -43,16 +42,29 @@ def home():
 @login_required
 def weatherPage():
     buttonShow = True
+    nextClicked = False
+    prevClicked = False
+    w = Weather()
+    weekData = w.getweeklydata(tdData['coord']['lon'],tdData['coord']['lat'], currUnit)
+
     if SavedCitys.query.filter_by(city=tdData['name']).first():
         buttonShow = False
-
+    
     if request.method == "POST":
-       city = SavedCitys(city=tdData['name'],user_id=current_user.id,unit=currUnit)
-       db.session.add(city)
-       db.session.commit()
-       flash(f'{tdData['name']} added to your saved citys', 'success')
-       return redirect(url_for('weatherPage'))
-    return render_template("weather.html",title='city', data = tdData,time = tdTime,url = imageUrl, sunrise=sunrise, sunset=sunset, buttonShow=buttonShow)
+        if 'add' in request.form:
+            city = SavedCitys(city=tdData['name'],user_id=current_user.id,unit=currUnit)
+            db.session.add(city)
+            db.session.commit()
+            flash(f'{tdData['name']} added to your saved citys', 'success')
+
+        if 'day1' in request.form:
+            return "Button 1 WORKED"
+        if 'next' in request.form:
+           nextClicked = True
+        if 'prev' in request.form:
+           prevClicked = True
+
+    return render_template("weather.html",title='city', data = tdData,time = tdTime,url = imageUrl, sunrise=sunrise, sunset=sunset, buttonShow=buttonShow,wData = weekData, nextClicked=nextClicked,prevClicked=prevClicked)
 
 @app.route("/register", methods=['GET','POST'])
 def register():

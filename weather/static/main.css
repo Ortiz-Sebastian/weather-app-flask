@@ -25,6 +25,9 @@ body {
     font-weight: 500;
   }
   
+  .bottom-container{
+    display: flex;
+  }
   .content-section {
     background: #bebdbd;
     padding: 10px 20px;
@@ -35,6 +38,18 @@ body {
     margin-right: 20px;
   }
 
+  .small-section1,.small-section2,.small-section3,.small-section4 {
+    background: #bebdbd;
+    padding: 10px 20px;
+    border: 2px solid #000000;
+    border-radius: 3px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right:20px;
+    height: 400px;
+    width: 25%;
+  }
+
    
   
   .main-img {
@@ -43,11 +58,10 @@ body {
     margin-right: 16px;
   }
   
-
-  .article-metadata {
-    padding-bottom: 1px;
-    margin-bottom: 4px;
-    border-bottom: 1px solid #e3e3e3
+  .small-img {
+    height: 150px;
+    width: 150px;
+    margin-right: 16px;
   }
   
   .article-metadata a:hover {
