@@ -77,17 +77,21 @@ def mycitys():
     numMunit = 0
 
     cityData = SavedCitys.query.all()
-    
-    for city in cityData:
-        if city.unit == "imperial":
-            numIunit = numIunit + 1
-        if city.unit == "metric":
-            numMunit = numMunit + 1
-        
-    if numIunit > numMunit:
-        freqUnit = 'imperial'
+    if 'Imperial' in request.form:
+           freqUnit = "Imperial"
+    elif 'Metric' in request.form:
+           freqUnit = "Metric"
     else:
-        freqUnit = 'metric'
+        for city in cityData:
+            if city.unit == "Imperial":
+                numIunit = numIunit + 1
+            else:
+                numMunit = numMunit + 1
+            
+        if numIunit > numMunit:
+            freqUnit = 'Imperial'
+        else:
+            freqUnit = 'Metric'
     
     for city in cityData:
         info = w.getdata(city.city,freqUnit)
@@ -99,7 +103,7 @@ def mycitys():
 
     
 
-    return render_template("mycitys.html", citysData=citysInfo)
+    return render_template("mycitys.html", citysData=citysInfo, numIunit=numIunit, numMunit=numMunit)
 
 @app.route("/account",methods=['GET','POST'])
 @login_required

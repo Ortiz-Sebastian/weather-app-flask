@@ -18,6 +18,6 @@ class SavedCitys(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     city = db.Column(db.String, unique=True, nullable=False)
     user_id= db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
-    unit = db.Column(db.String(), nullable = False)
+    unit = db.Column(db.String, nullable = False)
     def __repr__(self):
          return f"User('{self.city}')"
