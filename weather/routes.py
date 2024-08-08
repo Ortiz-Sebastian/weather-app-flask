@@ -15,39 +15,34 @@ def home():
     form = cityData()
     weather = Weather()
     if form.validate_on_submit():
-        global tdData 
-        tdData = weather.getdata(form.city.data,form.units.data)
-        
-        global currUnit
-        currUnit = form.units.data
-
-        global tdTime
-        tdTime = weather.getTime(time.time(),True)
-
-        global imageUrl
-        imageUrl = weather.getImageUrl(tdData['weather'][0]['icon'])
-
-        global sunrise
-        sunrise = weather.getTime(tdData['sys']['sunrise'], True)
-        sunrise = sunrise[17:]
-
-        global sunset
-        sunset = weather.getTime(tdData['sys']['sunset'], True)
-        sunset = sunset[17:]
-        return redirect(url_for('weatherPage'))
+        return redirect(url_for('weatherPage',city = form.city.data,unit = form.units.data))
      
     return render_template("home.html", form = form)
 
-@app.route("/weather",methods=['GET','POST'])
+@app.route("/weather/<string:city>/<string:unit>",methods=['GET','POST'])
 @login_required
-def weatherPage():
+def weatherPage(city,unit):
+    w = Weather()
+
+    tdData = w.getdata(city,unit)
+    currUnit = unit
+
+    sunrise = w.getTime(tdData['sys']['sunrise'], True)
+    sunrise = sunrise[17:]
+
+    sunset = w.getTime(tdData['sys']['sunset'], True)
+    sunset = sunset[17:]
+
+    imageUrl = w.getImageUrl(tdData['weather'][0]['icon'])
+    tdTime = w.getTime(time.time(),True)
+
     buttonShow = True
     nextClicked = False
     prevClicked = False
-    w = Weather()
+    
     weekData = w.getweeklydata(tdData['coord']['lon'],tdData['coord']['lat'], currUnit)
 
-    if SavedCitys.query.filter_by(city=tdData['name']).first():
+    if SavedCitys.query.filter_by(city=tdData['name'], user_id=current_user.id).first():
         buttonShow = False
     
     if request.method == "POST":
@@ -56,14 +51,14 @@ def weatherPage():
             db.session.add(city)
             db.session.commit()
             flash(f'{tdData['name']} added to your saved citys', 'success')
-            return redirect(url_for('weatherPage'))
+            return redirect(url_for('weatherPage',city=tdData['name'],unit=currUnit))
 
         if 'day1' in request.form:
             return "Button 1 WORKED"
         if 'next' in request.form:
-           nextClicked = True
+            nextClicked = True
         if 'prev' in request.form:
-           prevClicked = True
+            prevClicked = True
 
     return render_template("weather.html",title='city', data = tdData,time = tdTime,url = imageUrl, sunrise=sunrise, sunset=sunset, buttonShow=buttonShow,wData = weekData, nextClicked=nextClicked,prevClicked=prevClicked)
 
@@ -76,7 +71,7 @@ def mycitys():
     numIunit = 0
     numMunit = 0
 
-    cityData = SavedCitys.query.all()
+    cityData = SavedCitys.query.filter_by(user_id=current_user.id).all()
     if 'Imperial' in request.form:
            freqUnit = "Imperial"
     elif 'Metric' in request.form:
@@ -103,7 +98,7 @@ def mycitys():
 
     
 
-    return render_template("mycitys.html", citysData=citysInfo, numIunit=numIunit, numMunit=numMunit)
+    return render_template("mycitys.html", citysData=citysInfo)
 
 @app.route("/account",methods=['GET','POST'])
 @login_required
