@@ -13,7 +13,6 @@ with app.app_context():
 @app.route("/",methods=['GET','POST'])
 def home():
     form = cityData()
-    weather = Weather()
     if form.validate_on_submit():
         return redirect(url_for('weatherPage',city = form.city.data,unit = form.units.data))
      
@@ -23,24 +22,28 @@ def home():
 @login_required
 def weatherPage(city,unit):
     w = Weather()
-
     tdData = w.getdata(city,unit)
     currUnit = unit
 
-    sunrise = w.getTime(tdData['sys']['sunrise'], True)
+    weekData = w.getweeklydata(tdData['coord']['lon'],tdData['coord']['lat'], currUnit)
+
+    
+   
+
+    sunrise = w.getTime(tdData['sys']['sunrise'], weekData[0]['timezone'],True)
     sunrise = sunrise[17:]
 
-    sunset = w.getTime(tdData['sys']['sunset'], True)
+    sunset = w.getTime(tdData['sys']['sunset'],weekData[0]['timezone'], True)
     sunset = sunset[17:]
 
     imageUrl = w.getImageUrl(tdData['weather'][0]['icon'])
-    tdTime = w.getTime(time.time(),True)
+    tdTime = w.getTime(time.time(),weekData[0]['timezone'],True)
 
     buttonShow = True
     nextClicked = False
     prevClicked = False
     
-    weekData = w.getweeklydata(tdData['coord']['lon'],tdData['coord']['lat'], currUnit)
+    
 
     if SavedCitys.query.filter_by(city=tdData['name'], user_id=current_user.id).first():
         buttonShow = False
@@ -87,10 +90,15 @@ def mycitys():
             freqUnit = 'Imperial'
         else:
             freqUnit = 'Metric'
+
     
     for city in cityData:
         info = w.getdata(city.city,freqUnit)
-        info['dt'] = w.getTime(time.time(),True)
+        wdata = w.getweeklydata(info['coord']['lon'],info['coord']['lat'],freqUnit)
+
+        timezone = wdata[0]['timezone']
+                         
+        info['dt'] = w.getTime(time.time(),timezone,True)
         info['dt'] = info['dt'][17:]
         info['weather'][0]['icon'] = w.getImageUrl(info['weather'][0]['icon'])
         dict = {'time': info['dt'], 'url':info['weather'][0]['icon'], 'temp': info['main']['temp'],'max': info['main']['temp_max'], 'min': info['main']['temp_min'],'country': info['sys']['country'],'description': info['weather'][0]['description'], 'cityInfo':city  }
