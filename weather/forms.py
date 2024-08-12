@@ -13,6 +13,11 @@ def checkUsernamexist(self,field):
 def checkEmailexist(self,field):
     if User.query.filter_by(email = field.data).first():
         raise ValidationError("email already exist")
+    
+def checkEmailNotExist(self,field):
+    if User.query.filter_by(email = field.data).first() is None:
+        raise ValidationError("email is not registered to an account")
+
 
 def checkUsernamexistUpdate(self,field):
     if field.data != current_user.username:
@@ -26,7 +31,7 @@ def checkEmailexistUpdate(self,field):
     
 class registrationForm(FlaskForm):
     userName = StringField('Username',validators=[DataRequired(), Length(min=2, max=20),checkUsernamexist])
-    email =  StringField('Email',validators=[DataRequired(), Length(min=2, max=20),Email(),checkEmailexist])
+    email =  StringField('Email',validators=[DataRequired(), Length(min=2, max=50),Email(),checkEmailexist])
     password = PasswordField('Password', validators= [DataRequired()])
     confirmPassword = PasswordField('Confirm Password', validators= [DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign up')
@@ -35,7 +40,7 @@ class registrationForm(FlaskForm):
 
 class updateForm(FlaskForm):
     userName = StringField('Username',validators=[DataRequired(), Length(min=2, max=20),checkUsernamexistUpdate])
-    email =  StringField('Email',validators=[DataRequired(), Length(min=2, max=20),Email(),checkEmailexistUpdate])
+    email =  StringField('Email',validators=[DataRequired(), Length(min=2, max=50),Email(),checkEmailexistUpdate])
     submit = SubmitField('Update')
 
 class logInForm(FlaskForm):
@@ -56,3 +61,12 @@ class cityData(FlaskForm):
         data = w.getdata(field.data,"imperial")
         if data['cod'] == '404':
             raise ValidationError('City does not exist')
+        
+class RequestReset(FlaskForm):
+    email =  StringField('Email',validators=[DataRequired(), Length(min=2, max=50),Email(),checkEmailNotExist])
+    enter = SubmitField("Send Request")
+
+class ChangePassword(FlaskForm):
+    password = PasswordField('Password', validators= [DataRequired()])
+    confirmPassword = PasswordField('Confirm Password', validators= [DataRequired(), EqualTo('password')])
+    enter = SubmitField("Change Password")
