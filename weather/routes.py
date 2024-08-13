@@ -2,7 +2,7 @@
 from flask import render_template,url_for,flash,redirect,request, abort
 import time
 from weather import app,db,bcrypt,mail
-from weather.user import User, SavedCitys
+from weather.user import User, SavedCities
 from weather.forms import registrationForm, logInForm, cityData, updateForm, RequestReset, ChangePassword
 from weather.weatherData import Weather
 from flask_login import login_user,current_user,logout_user,login_required
@@ -46,15 +46,15 @@ def weatherPage(city,unit):
     
     
 
-    if SavedCitys.query.filter_by(city=tdData['name'], user_id=current_user.id).first():
+    if SavedCities.query.filter_by(city=tdData['name'], user_id=current_user.id).first():
         buttonShow = False
     
     if request.method == "POST":
         if 'add' in request.form:
-            city = SavedCitys(city=tdData['name'],user_id=current_user.id,unit=currUnit)
+            city = SavedCities(city=tdData['name'],user_id=current_user.id,unit=currUnit)
             db.session.add(city)
             db.session.commit()
-            flash(f'{tdData['name']} added to your saved citys', 'success')
+            flash(f'{tdData['name']} added to your saved cities', 'success')
             return redirect(url_for('weatherPage',city=tdData['name'],unit=currUnit))
 
         if 'day1' in request.form:
@@ -67,16 +67,16 @@ def weatherPage(city,unit):
     return render_template("weather.html",title='city', data = tdData,time = tdTime,url = imageUrl, sunrise=sunrise, sunset=sunset, buttonShow=buttonShow,
     wData = weekData, nextClicked=nextClicked,prevClicked=prevClicked)
 
-@app.route("/mycitys",methods=['GET','POST'])
+@app.route("/mycities",methods=['GET','POST'])
 @login_required
-def mycitys():
+def mycities():
     w= Weather()
     
-    citysInfo =[]
+    citiesInfo =[]
     numIunit = 0
     numMunit = 0
 
-    cityData = SavedCitys.query.filter_by(user_id=current_user.id).all()
+    cityData = SavedCities.query.filter_by(user_id=current_user.id).all()
     if 'Imperial' in request.form:
            freqUnit = "Imperial"
     elif 'Metric' in request.form:
@@ -104,11 +104,11 @@ def mycitys():
         info['dt'] = info['dt'][17:]
         info['weather'][0]['icon'] = w.getImageUrl(info['weather'][0]['icon'])
         dict = {'time': info['dt'], 'url':info['weather'][0]['icon'], 'temp': info['main']['temp'],'max': info['main']['temp_max'], 'min': info['main']['temp_min'],'country': info['sys']['country'],'description': info['weather'][0]['description'], 'cityInfo':city  }
-        citysInfo.append(dict)
+        citiesInfo.append(dict)
 
     
 
-    return render_template("mycitys.html", citysData=citysInfo)
+    return render_template("mycities.html", citiesData=citiesInfo)
 
 @app.route("/account",methods=['GET','POST'])
 @login_required
@@ -170,17 +170,17 @@ def logout():
 @app.route("/delete/<int:cityid>",methods=['POST'])
 @login_required
 def delete(cityid):
-    city = SavedCitys.query.get_or_404(cityid)
+    city = SavedCities.query.get_or_404(cityid)
     if city.user != current_user:
         abort(403)
     db.session.delete(city)
     db.session.commit()
     flash('city has been deleted', 'success')
-    return redirect(url_for('mycitys'))
+    return redirect(url_for('mycities'))
 
 def sendResetEmail(user):
     token = user.getResetToken()
-    msg = Message('Password Reset Request',sender='bashortiz18@gmail.com',recipients=[user.email])
+    msg = Message('Password Reset Request',sender='noreply@weatherapp.com',recipients=[user.email])
     msg.body = f''' click the following link to change your password:
     {url_for('resetToken',token=token, _external=True)}
     '''
@@ -214,3 +214,15 @@ def resetToken(token):
         flash(f'Password has been changed for {user.username}', 'success')
         return redirect(url_for('login'))
     return  render_template("resetToken.html", title="Reset Password", form=form)
+
+@app.errorhandler(404)
+def error404(error):
+    return render_template('404.html'),404
+
+@app.errorhandler(403)
+def error403(error):
+    return render_template('403.html'),403
+
+@app.errorhandler(500)
+def error500(error):
+    return render_template('500.html'),500

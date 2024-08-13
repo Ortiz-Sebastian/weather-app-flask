@@ -11,7 +11,7 @@ class User(db.Model,UserMixin):
     username = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(), nullable=False)
-    citys = db.relationship('SavedCitys',backref='user',lazy=True)
+    citys = db.relationship('SavedCities',backref='user',lazy=True)
 
     def getResetToken(self):
         s = Serializer(app.config['SECRET_KEY'])
@@ -27,7 +27,7 @@ class User(db.Model,UserMixin):
         
     def __repr__(self):
          return f"User('{self.username}','{self.email}')"
-class SavedCitys(db.Model):
+class SavedCities(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     city = db.Column(db.String, nullable=False)
     user_id= db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
